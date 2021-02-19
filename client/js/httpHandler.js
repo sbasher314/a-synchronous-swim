@@ -32,16 +32,14 @@ import SwimTeam from './swimTeam.js';
     });
   };
 
-  const ajaxGetRequest = (data = {}) => {
+  const ajaxGetRequest = (type = {}, callback) => {
     $.ajax({
       type: 'GET',
-      data: data,
+      data: type,
       url: serverUrl,
       contentType: "text/plain",
       success: (response) => {
-        // reload the page
-        SwimTeam.move(response);
-        setTimeout(() => ajaxGetRequest(), 1000);
+        callback(response);
       }
     });
 
@@ -64,6 +62,16 @@ import SwimTeam from './swimTeam.js';
 
     ajaxFileUplaod(file);
   });
-  ajaxGetRequest()
+
+  const getSwimDirection = (direction) => {
+    SwimTeam.move(direction);
+    setTimeout(() => ajaxGetRequest({'type': 'swim'}, getSwimDirection), 1000);
+  }
+
+  ajaxGetRequest({'type': 'background'}, (image) => {
+    console.log(image);
+  });
+
+    //ajaxGetRequest({'type': 'swim'}, getSwimDirection);
 
 })();
