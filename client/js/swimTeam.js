@@ -5,6 +5,10 @@ const SwimTeam = {
   coords: { top: 100, left: 100 },
   max: { top: 0, left: 0, bottom: 295, right: 240 },
 
+  init: () => {
+
+  },
+
   move: (direction) => {
     if (!SwimTeam.valid(direction)) {
       return;
@@ -65,7 +69,9 @@ const SwimTeam = {
         SwimTeam.coords.left += 5;
       }
       break;
-    } 
+    }
   }
 
 };
+
+export default SwimTeam;

@@ -1,3 +1,5 @@
+import SwimTeam from './swimTeam.js';
+
 (function() {
 
   const serverUrl = 'http://127.0.0.1:3000';
@@ -11,13 +13,15 @@
   // Note: remember to fix the URL below.
   /////////////////////////////////////////////////////////////////////
 
+
+
   const ajaxFileUplaod = (file) => {
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: serverUrl,
       cache: false,
       contentType: false,
       processData: false,
@@ -26,6 +30,21 @@
         window.location = window.location.href;
       }
     });
+  };
+
+  const ajaxGetRequest = (data = {}) => {
+    $.ajax({
+      type: 'GET',
+      data: data,
+      url: serverUrl,
+      contentType: "text/plain",
+      success: (response) => {
+        // reload the page
+        SwimTeam.move(response);
+        setTimeout(() => ajaxGetRequest(), 1000);
+      }
+    });
+
   };
 
   $('form').on('submit', function(e) {
@@ -45,5 +64,6 @@
 
     ajaxFileUplaod(file);
   });
+  ajaxGetRequest()
 
 })();
