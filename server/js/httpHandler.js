@@ -17,8 +17,9 @@ module.exports.router = (req, res, next = ()=>{}) => {
   res.writeHead(200, headers);
   if (req.method === 'GET') {
     // randomize swim command
-    let commands = ['up','left','right','down'];
-    res.write(commands[Math.floor(Math.random()*4)]);
+    res.type = 'cors';
+    let command = messageQueue.dequeue() ?? '';
+    res.write(command);
   }
   res.end();
   next(); // invoke next() at the end of a request to help with testing!

@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const expect = require('chai').expect;
 const server = require('./mockServer');
-
+const messageQueue = require('../js/messageQueue.js');
 const httpHandler = require('../js/httpHandler');
 
 
@@ -14,6 +14,7 @@ describe('server responses', () => {
     let {req, res} = server.mock('/', 'OPTIONS');
 
     httpHandler.router(req, res);
+
     expect(res._responseCode).to.equal(200);
     expect(res._ended).to.equal(true);
     expect(res._data.toString()).to.be.empty;
@@ -24,10 +25,10 @@ describe('server responses', () => {
   it('should respond to a GET request for a swim command', (done) => {
     // write your test here
     let {req, res} = server.mock('/', 'GET');
+    httpHandler.initialize(messageQueue);
+    messageQueue.enqueue('left');
     httpHandler.router(req, res);
-
-    let commands = {up: true, down: true, left: true, right: true};
-    expect(commands[res._data.toString()]).to.equal(true);
+    expect(res._data.toString()).to.equal('left');
     done();
   });
 
