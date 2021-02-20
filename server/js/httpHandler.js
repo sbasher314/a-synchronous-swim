@@ -14,33 +14,46 @@ module.exports.initialize = (queue) => {
 
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url)
-  var params = new URLSearchParams(req.url.split('?')[1]);
-  var type = params.get('type')
-  let statusCode = 200;
+  let params = new URLSearchParams(req.url.split('?')[1]);
+  let type = params.get('type')
+
+  res.on('end', () => {
+    next();
+  })
 
   if (req.method === 'GET') {
     // randomize swim command
     res.type = 'cors';
     if (type === 'swim') {
-      let command = messageQueue.dequeue() ?? '';
-      res.write(command);
-    }
-    if (type === 'background') {
-      console.log(type);
-      console.log(module.exports.backgroundImageFile);
-      if (fs.existsSync('./' + module.exports.backgroundImageFile)) {
-        console.log('it exists!');
+      headers['Content-Type'] = 'text/plain';
+      res.writeHead(200, headers);
+      res.end(messageQueue.dequeue() ?? '');
+    } else if (type === 'background' || req.url === '/background.jpg') {
+      let path = ('./' + this.backgroundImageFile);
+      if (fs.existsSync(path)) {
+        headers['Content-Type'] = 'image/jpg';
+        res.writeHead(200, headers);
+        fs.createReadStream(path).pipe(res);
       } else {
-        statusCode = 404;
-        res.statusMessage = 'background'
+        res.writeHead(404, headers);
+        res.end('background not found');
       }
       // http://127.0.0.1:3000/background.jpg
       //if image not found
         //404 error
+    } else if (req.url !== '/') {
+      res.writeHead(404, headers);
+      res.end('invalid path');
+      next();
     }
 
   }
-  res.writeHead(statusCode, headers);
-  res.end();
-  next(); // invoke next() at the end of a request to help with testing!
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
+    res.end();
+  }
+
+
+   // invoke next() at the end of a request to help with testing!
 };
+
