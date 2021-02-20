@@ -68,10 +68,6 @@ import SwimTeam from './swimTeam.js';
     setTimeout(() => ajaxGetRequest({'type': 'swim'}, getSwimDirection), 1000);
   }
 
-  ajaxGetRequest({'type': 'background'}, (image) => {
-    console.log(image);
-  });
-
-    //ajaxGetRequest({'type': 'swim'}, getSwimDirection);
+  ajaxGetRequest({'type': 'swim'}, getSwimDirection);
 
 })();

@@ -1,3 +1,4 @@
+import SwimTeam from './swimTeam.js';
 
 $('body').on('keydown', (event) => {
   var arrowPress = event.key.match(/Arrow(Up|Down|Left|Right)/);
